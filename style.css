@@ -60,15 +60,16 @@ a:hover {
 }
 
 /* Widget Section (Horizontal layout for widgets) */
-.horizontal-container {
+.widget-container {
     display: flex;
     justify-content: space-between;
     width: 100%;
     max-width: 960px;
     margin-bottom: 20px;
+    gap: 16px; /* Space between widgets */
 }
 
-.horizontal-container .item {
+.widget-container .item {
     flex: 1;
     margin-right: 20px;
     background-color: #fff;
@@ -77,9 +78,21 @@ a:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.horizontal-container .item:last-child {
+.widget-container .item:last-child {
     margin-right: 0;
 }
+
+.widget {
+    flex: 1; /* Make widgets take up equal horizontal space */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    min-width: 0; /* Prevent overflow issues */
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* ADD MORE STYLES TO WIDGETS HERE */
 
 /* Chart Container */
 #lineChart {
