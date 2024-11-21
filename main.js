@@ -15,20 +15,30 @@ const svgLine = d3.select("#lineChart")
 // 2: LOAD AND TRANSFORM DATA
 d3.csv("weather.csv").then(data => {
     // 2.a: Rename and reformat
+    // data.forEach(YOUR_CODE);
+    
+    // Check your work:
+    // console.log("Reformatted data:", data);
+
+    // 2.b: Filter (if applicable)
+    // Reduce the number of rows, without changing the columns
+    // const filteredData = YOUR_CODE;
 
     // Check your work:
-    // console.log("Raw data:", data);
+    // console.log("Filtered data:" filteredData);
 
-    // 2.b: GROUP AND AGGREGATE
+    // 2.c: Group and aggregate
     // "For each [some category] per [some other category if applicable], I want the [some aggregation] of [some numeric variable]."
+    // const groupedData = YOUR_CODE;
 
     // Check your work:
     // console.log("Grouped data:", groupedData);
 
-    // 2.c: Pivot OR flatten your data into an array where each element contains:
+    // 2.d: Pivot OR flatten your data into an array where each element contains:
     // - X-variable (group 1)
     // - Y-variable (number)
     // - Category (group 2, if applicable)
+    // const flattenedData = YOUR_CODE;
 
     // Check your work:
     // console.log("Flattened/pivoted data:", flattenedData);
