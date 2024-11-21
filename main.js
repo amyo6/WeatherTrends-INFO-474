@@ -74,5 +74,5 @@ d3.csv("weather.csv").then(data => {
 
 
     // 8: ADD INTERACTIVITY
-    // You must have multiple interactive elements such as: a tooltip, toggle, dropdown, checklist, number input, time range slider, or zoomable view. With the exception of the tooltip and zoomable view, you must add all interactive elements to "index.html" in the interactive widgets section.
+    // You must have 1-2 interactive elements such as: a tooltip, toggle, dropdown, checklist, number input, time range slider, or zoomable view. With the exception of the tooltip and zoomable view, you must add all interactive elements to "index.html" in the interactive widgets section.
 });
