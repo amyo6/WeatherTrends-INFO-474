@@ -15,55 +15,95 @@ const svgLine = d3.select("#lineChart")
 // 2: LOAD AND TRANSFORM DATA
 d3.csv("weather.csv").then(data => {
     // 2.a: Rename and reformat
-    // data.forEach(YOUR_CODE);
+    data.forEach(d => {
+        d.month = new Date(d.date).getMonth() + 1; // Parse dates and get month
+        d.temp = +d.actual_mean_temp; // Convert mean temperature to numeric
+    });
     
     // Check your work:
     // console.log("Reformatted data:", data);
 
     // 2.b: Filter (if applicable)
     // Reduce the number of rows, without changing the columns
-    // const filteredData = YOUR_CODE;
+    const filteredData = data;
 
     // Check your work:
-    // console.log("Filtered data:" filteredData);
+    // console.log("Filtered data:", filteredData);
 
     // 2.c: Group and aggregate
-    // "For each [some category] per [some other category if applicable], I want the [some aggregation] of [some numeric variable]."
-    // const groupedData = YOUR_CODE;
+    // "For each city per month, I want the average of actual mean temperature."
+    const groupedData = d3.groups(filteredData, d => d.city, d => d.month)
+    .map(([city, months]) => ({
+        city,
+        values: months.map(([month, entries]) => ({
+            month,
+            avgTemp: d3.mean(entries, e => e.temp)
+        }))
+        .sort((a, b) => a.month - b.month)                  
+    }));
 
     // Check your work:
     // console.log("Grouped data:", groupedData);
 
     // 2.d: Pivot OR flatten your data into an array where each element contains:
-    // - X-variable (group 1)
-    // - Y-variable (number)
-    // - Category (group 2, if applicable)
-    // const flattenedData = YOUR_CODE;
+    // - X-variable (month)
+    // - Y-variable (average temperature)
+    // - Category (city)
+    const flattenedData = groupedData.flatMap(({city, values}) => 
+        values.map(({month, avgTemp}) => ({
+            month,
+            avgTemp,
+            city
+        })));
 
     // Check your work:
     // console.log("Flattened/pivoted data:", flattenedData);
 
-
     // 3: SET SCALES
-    // 3.a: Define xScale for dates
+    // 3.a: Define xScale for months
+    const xMonth = d3.scaleBand()
+                    .domain(flattenedData.map(d => d.month))
+                    .range([0, width])
+                    .padding(0.1);
 
-    // 3.b: Define yScale for numeric variable
+    // 3.b: Define yScale for average mean temperature
+    const yTemp = d3.scaleLinear()
+                .domain([0, d3.max(flattenedData, d => d.avgTemp)])
+                .range([height, 0]);
 
-    // 3.c: Define colorScale if you are using a categorical variable (e.g., city or region)
+    // 3.c: Define colorScale for city
+    const colorScale = d3.scaleOrdinal()
+        .domain(groupedData.map(d => d.city))
+        .range(d3.schemeCategory10);
 
     // 3.d: Create your line generator to connect the points in your line.
+    const line = d3.line()
+                    .x(d => xMonth(d.month))
+                    .y(d => yTemp(d.avgTemp));
 
 
     // 4: PLOT LINES
-    // 4.a: Create path for each city (if grouping by city) or each region
-
-        // 4.b: Style your line(s).
+    // 4.a: Create path for each city 
+    svgLine.selectAll("path")
+        .data(groupedData)
+        .enter()
+        .append("path")
+        .attr("d", d => line(d.values))
+    // 4.b: Style your line(s).
+        .style("stroke", d => colorScale(d.city))
+        .style("fill", "none")
+        .style("stroke-width", 2);
     
 
     // 5: ADD AXES
     // 5.a: X-axis
+    svgLine.append('g')
+            .attr('transform', `translate(0,${height})`)
+            .call(d3.axisBottom(xMonth));
 
     // 5.b: Y-axis
+    svgLine.append('g')
+            .call(d3.axisLeft(yTemp));
 
 
     // 6: ADD LABELS
