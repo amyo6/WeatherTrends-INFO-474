@@ -165,19 +165,6 @@ d3.csv("weather.csv").then(data => {
 
     // 8: ADD INTERACTIVITY
     // You must have 1-2 interactive elements such as: a tooltip, toggle, dropdown, checklist, number input, time range slider, or zoomable view. With the exception of the tooltip and zoomable view, you must add all interactive elements to "index.html" in the interactive widgets section.
-    // Select the container inside the widget
-    // const checkboxContainer = d3.select("#checkbox-container");
 
-    // // Add checkboxes for each city
-    // checkboxContainer.selectAll("label")
-    //     .data(groupedData)
-    //     .enter()
-    //     .append("label")
-    //     .text(d => d.city)
-    //     .append("input")
-    //     .attr("type", "checkbox")
-    //     .attr("class", "city-checkbox")
-    //     .attr("value", d => d.city)
-    //     .property("checked", true); 
 
 });
