@@ -93,6 +93,16 @@ a:hover {
 }
 
 /* ADD MORE STYLES TO WIDGETS HERE */
+/* #checkbox-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.city-checkbox {
+    margin-right: 5px;
+} */
 
 /* Chart Container */
 #lineChart {
