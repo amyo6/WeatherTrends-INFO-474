@@ -81,6 +81,19 @@ d3.csv("weather.csv").then(data => {
                     .x(d => xMonth(d.month))
                     .y(d => yTemp(d.avgTemp));
 
+        // Create Tooltip
+    const tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background", "rgba(0, 0, 0, 0.7)")
+        .style("color", "white")
+        .style("padding", "10px")
+        .style("border-radius", "5px")
+        .style("font-size", "12px");
+
+
 
     // 4: PLOT LINES
     // 4.a: Create path for each city 
@@ -89,10 +102,89 @@ d3.csv("weather.csv").then(data => {
         .enter()
         .append("path")
         .attr("d", d => line(d.values))
+        .attr("transform", "translate(25, 0)")   // Align with data points with x-axis
     // 4.b: Style your line(s).
         .style("stroke", d => colorScale(d.city))
         .style("fill", "none")
         .style("stroke-width", 2);
+
+
+        svgLine.selectAll()
+        .on("mouseover", function(event, d) {
+            const month_tt = d[0].month;  // Access month from the first data point
+            const avgTemp_tt = d[0].avgTemp;  // Access average temp from the first data point
+
+            tooltip.style("visibility", "visible")
+                .html(`Month: ${month_tt}<br>Avg. Actual Temperature: ${(avgTemp_tt).toFixed(2)}°F`)  // Tooltip shows month and average actual temp
+                .style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+
+            // Create the large circle at the hovered point
+            svgLine.append("circle")
+                .attr("class", "hover-circle")
+                .attr("cx", xMonth(month_tt))  // Position based on the xScale (year)
+                .attr("cy", yTemp(avgTemp_tt)) // Position based on the yScale (count)
+                .attr("r", 6)  // Radius of the large circle
+                .attr("transform", "translate(25, 0)")   // Align with data points with x-axis
+                .style("fill", "steelblue") // Circle color
+                .style("stroke", "black")
+                .style("stroke-width", 2); 
+        })
+        .on("mousemove", function(event) {
+            tooltip.style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+            tooltip.style("visibility", "hidden");
+            
+            // Remove the hover circle when mouseout occurs
+            svgLine.selectAll(".hover-circle").remove();
+        });
+
+    // Add circles for each data point for tooltip interaction
+    svgLine.selectAll(".data-point")
+        .data(flattenedData)
+        .enter()
+        .append("circle")
+        .attr("class", "data-point")
+        .attr("cx", d => xMonth(d.month))
+        .attr("cy", d => yTemp(d.avgTemp))
+        .attr("r", 5)
+        .attr("transform", "translate(25, 0)")   // Align with data points with x-axis
+        .style("fill", "steelblue")
+        .style("opacity", 0)  // Make circles invisible by default
+        .on("mouseover", function(event, d) {
+            tooltip.style("visibility", "visible")
+                .html(`<strong>Month:</strong> ${d.month} <br><strong>Avg. Actual Temperature:</strong> ${(d.avgTemp).toFixed(2)}°F`)
+                .style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+
+            // Make the hovered circle visible
+            d3.select(this).style("opacity", 1);  // Set opacity to 1 on hover
+
+            // Create the large circle at the hovered point
+            svgLine.append("circle")
+                .attr("class", "hover-circle")
+                .attr("cx", xMonth(d.month))  // Position based on the xScale (year)
+                .attr("cy", yTemp(d.avgTemp)) // Position based on the yScale (count)
+                .attr("r", 6)  // Radius of the large circle
+                .attr("transform", "translate(25, 0)")   // Align with data points with x-axis
+                .style("fill", "steelblue") // Circle color
+                .style("stroke-width", 2);
+        })
+        .on("mousemove", function(event) {
+            tooltip.style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        })
+        .on("mouseout", function() {
+            tooltip.style("visibility", "hidden");
+
+            // Remove the hover circle when mouseout occurs
+            svgLine.selectAll(".hover-circle").remove();
+
+            // Make the circle invisible again
+            d3.select(this).style("opacity", 0);  // Reset opacity to 0 when not hovering
+        });
     
 
     // 5: ADD AXES
@@ -159,6 +251,7 @@ d3.csv("weather.csv").then(data => {
         .attr("x", 30)
         .attr("y", 10)
         .attr("text-anchor", "start")
+        .style("font-size", "13px")
         .style("alignment-baseline", "middle")
         .text(d => d.city); 
 
