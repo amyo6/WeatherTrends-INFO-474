@@ -191,11 +191,13 @@ d3.csv("weather.csv").then(data => {
     // 5.a: X-axis
     svgLine.append('g')
             .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(xMonth));
+            .call(d3.axisBottom(xMonth).tickFormat(d3.format("d")))
+            .attr("class", "x-axis");
 
     // 5.b: Y-axis
     svgLine.append('g')
-            .call(d3.axisLeft(yTemp));
+            .call(d3.axisLeft(yTemp))
+            .attr("class", "y-axis");
 
 
     // 6: ADD LABELS
@@ -258,6 +260,31 @@ d3.csv("weather.csv").then(data => {
 
     // 8: ADD INTERACTIVITY
     // You must have 1-2 interactive elements such as: a tooltip, toggle, dropdown, checklist, number input, time range slider, or zoomable view. With the exception of the tooltip and zoomable view, you must add all interactive elements to "index.html" in the interactive widgets section.
+        // Function to update the chart based on selected category
+        d3.select("#categorySelect").on("change", function() {
+            const selectedCity = d3.select(this).property("value"); // Get the selected city
+            updateChart(selectedCity); // Call the updateChart function with the selected city
+        });
 
+        function updateChart(selectedCity) {
+            
+            svgLine.selectAll("path").remove();
+            const filteredData = selectedCity === "All Cities" ? groupedData : groupedData.filter(d => d.city === selectedCity);
+        
+            const paths = svgLine.selectAll("path").data(filteredData);
+        
+            paths.exit().remove(); 
+        
+            paths.enter() 
+                .append("path")
+                .attr("class", "path")
+                .merge(paths)
+                .attr("d", d => line(d.values))
+                .style("stroke", d => colorScale(d.city))
+                .style("fill", "none")
+                .style("stroke-width", 2);
+        }
+        
+        
 
 });
