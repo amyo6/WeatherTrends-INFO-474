@@ -284,8 +284,16 @@ d3.csv("weather.csv").then(data => {
                 .style("stroke", d => colorScale(d.city))
                 .style("fill", "none")
                 .style("stroke-width", 2);
-        }
-        
-        
 
+            // Redraw X-axis
+            svgLine.append('g')
+            .attr('transform', `translate(0,${height})`)
+            .call(d3.axisBottom(xMonth).tickFormat(d3.format("d")))
+            .attr("class", "x-axis");
+
+            // Redraw Y-axis
+            svgLine.append('g')
+                .call(d3.axisLeft(yTemp))
+                .attr("class", "y-axis");
+        }
 });
