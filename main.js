@@ -280,6 +280,7 @@ d3.csv("weather.csv").then(data => {
                 .attr("class", "path")
                 .merge(paths)
                 .attr("d", d => line(d.values))
+                .attr("transform", "translate(25, 0)")   // Align with data points with x-axis
                 .style("stroke", d => colorScale(d.city))
                 .style("fill", "none")
                 .style("stroke-width", 2);
